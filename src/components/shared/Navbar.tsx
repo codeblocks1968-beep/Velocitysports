@@ -8,11 +8,13 @@ import { VelocityButton } from "@/components/ui/VelocityButton";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import CartDrawer from "@/components/shared/CartDrawer";
+import ProfileDropdown from "@/components/shared/ProfileDropdown";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { scrollY } = useScroll();
   const { totalItems, toggleCart } = useCartStore();
 
@@ -29,6 +31,7 @@ const Navbar = () => {
     { name: "Performance", href: "/category/performance" },
     { name: "Equipment", href: "/category/equipment" },
     { name: "Evolution", href: "/innovation" },
+    { name: "Combat", href: "/fight" },
   ];
 
   return (
@@ -68,9 +71,15 @@ const Navbar = () => {
           <button className="text-white/80 hover:text-velocity-blue transition-colors hidden sm:block">
             <Search size={20} />
           </button>
-          <button className="text-white/80 hover:text-velocity-blue transition-colors">
-            <User size={20} />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="text-white/80 hover:text-velocity-blue transition-colors flex items-center justify-center cursor-pointer"
+            >
+              <User size={20} />
+            </button>
+            <ProfileDropdown isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
+          </div>
           <button
             onClick={toggleCart}
             className="text-white/80 hover:text-velocity-blue transition-colors relative"

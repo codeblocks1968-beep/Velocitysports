@@ -3,6 +3,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { X, Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { VelocityButton } from "@/components/ui/VelocityButton";
@@ -151,9 +152,11 @@ const CartDrawer = () => {
                     ${totalPrice().toFixed(2)}
                   </span>
                 </div>
-                <VelocityButton variant="primary" size="lg" className="w-full">
-                  Checkout
-                </VelocityButton>
+                <Link href="/checkout" onClick={closeCart} className="w-full">
+                  <VelocityButton variant="primary" size="lg" className="w-full cursor-pointer">
+                    Checkout
+                  </VelocityButton>
+                </Link>
                 <button
                   onClick={closeCart}
                   className="w-full text-center text-xs font-bebas tracking-widest text-white/30 hover:text-white transition-colors"

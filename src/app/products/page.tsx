@@ -6,21 +6,33 @@ import { SlidersHorizontal, Search, X } from "lucide-react";
 import Navbar from "@/components/shared/Navbar";
 import ProductCard from "@/components/shared/ProductCard";
 
-type Category = "All" | "Strength" | "Conditioning" | "Mobility" | "Accessories" | "Recovery";
+type Category = "All" | "Football" | "Cricket" | "Basketball" | "Tennis" | "Gym" | "Badminton" | "Hockey" | "Volleyball";
 type SortOption = "featured" | "price-asc" | "price-desc" | "name";
 
 const ALL_PRODUCTS = [
-  { id: "1", name: "Carbon-V1 Kettlebell", price: "$249.00", image: "/images/products/kettlebell.png", category: "Strength", variant: "blue" as const, featured: true },
-  { id: "2", name: "Smart LED Resistance Bands", price: "$129.00", image: "/images/products/resistance-bands.png", category: "Conditioning", variant: "lime" as const, featured: true },
-  { id: "3", name: "Velocity Pro Grip Gloves", price: "$89.00", image: "/images/products/kettlebell.png", category: "Accessories", variant: "blue" as const, featured: false },
-  { id: "4", name: "Hyper-Flex Foam Roller", price: "$64.00", image: "/images/products/resistance-bands.png", category: "Recovery", variant: "lime" as const, featured: false },
-  { id: "5", name: "Titan Pull-Up System", price: "$349.00", image: "/images/products/kettlebell.png", category: "Strength", variant: "blue" as const, featured: true },
-  { id: "6", name: "ProMobility Band Set", price: "$59.00", image: "/images/products/resistance-bands.png", category: "Mobility", variant: "lime" as const, featured: false },
-  { id: "7", name: "Neuro Grip Bar", price: "$189.00", image: "/images/products/kettlebell.png", category: "Strength", variant: "blue" as const, featured: false },
-  { id: "8", name: "Cryo Recovery Sleeve", price: "$74.00", image: "/images/products/resistance-bands.png", category: "Recovery", variant: "lime" as const, featured: false },
+  { id: "1",  name: "Pro Elite Match Football",      price: "$89.00",   image: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600&q=80", category: "Football",   variant: "blue" as const, featured: true  },
+  { id: "2",  name: "GripMax Goalkeeper Gloves",     price: "$74.00",   image: "https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?w=600&q=80", category: "Football",   variant: "lime" as const, featured: false },
+  { id: "3",  name: "Velocity X Football Cleats",    price: "$219.00",  image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80", category: "Football",   variant: "blue" as const, featured: true  },
+  { id: "4",  name: "PowerStrike Willow Bat",        price: "$179.00",  image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600&q=80", category: "Cricket",    variant: "lime" as const, featured: true  },
+  { id: "5",  name: "Titan Pro Cricket Helmet",      price: "$129.00",  image: "https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=600&q=80", category: "Cricket",    variant: "blue" as const, featured: false },
+  { id: "6",  name: "Champion XL Cricket Kit Bag",   price: "$149.00",  image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80", category: "Cricket",    variant: "lime" as const, featured: false },
+  { id: "7",  name: "StreetPro Basketball",          price: "$99.00",   image: "https://images.unsplash.com/photo-1519861531473-9200262188bf?w=600&q=80", category: "Basketball", variant: "blue" as const, featured: true  },
+  { id: "8",  name: "AirDunk Pro Sneakers",          price: "$259.00",  image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80", category: "Basketball", variant: "lime" as const, featured: true  },
+  { id: "9",  name: "SlamMaster Basketball Hoop",    price: "$349.00",  image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80", category: "Basketball", variant: "blue" as const, featured: false },
+  { id: "10", name: "AeroSpin Tennis Racket",        price: "$139.00",  image: "https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=600&q=80", category: "Tennis",     variant: "lime" as const, featured: true  },
+  { id: "11", name: "Grand Slam Tennis Balls",       price: "$29.00",   image: "https://images.unsplash.com/photo-1592170551490-988769bc9e25?w=600&q=80", category: "Tennis",     variant: "blue" as const, featured: false },
+  { id: "12", name: "IronFlex Adjustable Dumbbells", price: "$299.00",  image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=600&q=80", category: "Gym",        variant: "blue" as const, featured: true  },
+  { id: "13", name: "RunX Smart Treadmill",          price: "$1,299.00",image: "https://images.unsplash.com/photo-1594882645126-14020914d58d?w=600&q=80", category: "Gym",        variant: "lime" as const, featured: true  },
+  { id: "14", name: "ZenFlow Yoga Mat",              price: "$69.00",   image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80", category: "Gym",        variant: "blue" as const, featured: false },
+  { id: "15", name: "AeroSwift Badminton Racket",    price: "$119.00",  image: "https://images.unsplash.com/photo-1593766788306-28561dc934b5?w=600&q=80", category: "Badminton",  variant: "lime" as const, featured: false },
+  { id: "16", name: "Turbo Feather Shuttlecock Set", price: "$24.00",   image: "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=600&q=80", category: "Badminton",  variant: "blue" as const, featured: false },
+  { id: "17", name: "IceForce Hockey Stick",         price: "$189.00",  image: "https://images.unsplash.com/photo-1515703407324-5f753afd8be8?w=600&q=80", category: "Hockey",     variant: "lime" as const, featured: true  },
+  { id: "18", name: "FrostGuard Hockey Helmet",      price: "$229.00",  image: "https://images.unsplash.com/photo-1608231387042-66d1773d3028?w=600&q=80", category: "Hockey",     variant: "blue" as const, featured: false },
+  { id: "19", name: "SpikePro Volleyball",           price: "$79.00",   image: "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=600&q=80", category: "Volleyball", variant: "lime" as const, featured: false },
+  { id: "20", name: "BeachMaster Volleyball Net",    price: "$159.00",  image: "https://images.unsplash.com/photo-1597524678053-5cf561a4cb6e?w=600&q=80", category: "Volleyball", variant: "blue" as const, featured: false },
 ];
 
-const CATEGORIES: Category[] = ["All", "Strength", "Conditioning", "Mobility", "Accessories", "Recovery"];
+const CATEGORIES: Category[] = ["All", "Football", "Cricket", "Basketball", "Tennis", "Gym", "Badminton", "Hockey", "Volleyball"];
 
 const SORT_OPTIONS: { label: string; value: SortOption }[] = [
   { label: "Featured", value: "featured" },

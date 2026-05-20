@@ -3,6 +3,8 @@
 import React, { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Package, Heart, Settings, LogIn, UserPlus, ChevronRight, X } from "lucide-react";
+import Link from "next/link";
+import { useUserStore } from "@/store/userStore";
 
 interface ProfileDropdownProps {
   isOpen: boolean;
@@ -11,6 +13,7 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const { profile } = useUserStore();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -44,34 +47,48 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
               <X size={14} />
             </button>
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-velocity-grey border border-white/10 flex items-center justify-center flex-shrink-0">
-                <User size={18} className="text-white/40" />
+              <div className="w-10 h-10 rounded-full bg-velocity-grey border border-white/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {profile.avatar ? (
+                  <img src={profile.avatar} alt={profile.name} className="w-full h-full object-cover" />
+                ) : (
+                  <User size={18} className="text-white/40" />
+                )}
               </div>
               <div>
-                <p className="font-bebas tracking-wide text-white">Guest User</p>
-                <p className="text-[10px] text-white/30 font-inter">Sign in to access your account</p>
+                <p className="font-bebas tracking-wide text-white flex items-center gap-1">
+                  {profile.name}
+                  <span className="text-[9px] px-1 bg-velocity-blue/20 text-velocity-blue border border-velocity-blue/30 rounded font-mono">
+                    Lvl {profile.level}
+                  </span>
+                </p>
+                <p className="text-[10px] text-white/30 font-inter truncate w-44">{profile.email}</p>
               </div>
             </div>
-            <div className="flex space-x-2 mt-4">
-              <button className="flex-1 flex items-center justify-center space-x-1.5 bg-velocity-blue text-black py-2 font-bebas tracking-widest text-sm hover:bg-white transition-colors">
-                <LogIn size={14} />
-                <span>Sign In</span>
-              </button>
-              <button className="flex-1 flex items-center justify-center space-x-1.5 border border-white/15 text-white/60 py-2 font-bebas tracking-widest text-sm hover:border-white/40 hover:text-white transition-colors">
-                <UserPlus size={14} />
-                <span>Register</span>
-              </button>
+            <div className="mt-4">
+              <Link 
+                href="/profile" 
+                onClick={onClose}
+                className="w-full flex items-center justify-center space-x-1.5 bg-velocity-blue text-black py-2 font-bebas tracking-widest text-sm hover:bg-white transition-colors cursor-pointer"
+              >
+                <User size={14} />
+                <span>View Dashboard</span>
+              </Link>
             </div>
           </div>
 
           {/* Menu */}
           <div className="p-2">
             {[
-              { icon: <Package size={16} />, label: "My Orders",  sub: "Track your purchases" },
-              { icon: <Heart size={16} />,   label: "Wishlist",   sub: "Saved items"          },
-              { icon: <Settings size={16} />,label: "Settings",   sub: "Account preferences"  },
+              { icon: <Package size={16} />, label: "My Orders",  sub: "Track your purchases", tab: "orders" },
+              { icon: <Heart size={16} />,   label: "Wishlist",   sub: "Saved items",          tab: "wishlist" },
+              { icon: <Settings size={16} />,label: "Settings",   sub: "Account preferences",  tab: "settings" },
             ].map((item) => (
-              <a key={item.label} href="#" className="flex items-center justify-between px-3 py-3 hover:bg-white/5 transition-colors group">
+              <Link 
+                key={item.label} 
+                href={`/profile?tab=${item.tab}`} 
+                onClick={onClose} 
+                className="flex items-center justify-between px-3 py-3 hover:bg-white/5 transition-colors group cursor-pointer"
+              >
                 <div className="flex items-center space-x-3">
                   <span className="text-white/30 group-hover:text-velocity-blue transition-colors">{item.icon}</span>
                   <div>
@@ -80,7 +97,7 @@ const ProfileDropdown = ({ isOpen, onClose }: ProfileDropdownProps) => {
                   </div>
                 </div>
                 <ChevronRight size={14} className="text-white/20 group-hover:text-velocity-blue transition-colors" />
-              </a>
+              </Link>
             ))}
           </div>
 

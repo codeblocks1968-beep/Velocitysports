@@ -7,6 +7,7 @@ import { ShoppingCart, Heart, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VelocityButton } from "@/components/ui/VelocityButton";
 import { useCartStore } from "@/store/cartStore";
+import { useUserStore } from "@/store/userStore";
 
 interface ProductCardProps {
   id: string;
@@ -19,14 +20,19 @@ interface ProductCardProps {
 
 const ProductCard = ({ id, name, price, image, category, variant = "blue" }: ProductCardProps) => {
   const [added, setAdded] = useState(false);
-  const [liked, setLiked] = useState(false);
   const { addItem, openCart } = useCartStore();
+  const { toggleWishlist, inWishlist } = useUserStore();
+  const liked = inWishlist(id);
 
   const handleAddToCart = () => {
     addItem({ id, name, price, image, category });
     setAdded(true);
     openCart();
     setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleWishlistToggle = () => {
+    toggleWishlist({ id, name, price, image, category });
   };
 
   return (
@@ -48,10 +54,10 @@ const ProductCard = ({ id, name, price, image, category, variant = "blue" }: Pro
       {/* Wishlist Button */}
       <div className="absolute top-4 right-4 z-10 translate-x-12 group-hover:translate-x-0 transition-transform duration-500">
         <button
-          onClick={() => setLiked(!liked)}
+          onClick={handleWishlistToggle}
           className={cn(
-            "w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center transition-colors",
-            liked ? "bg-red-500 text-white" : "bg-black/50 text-white hover:bg-red-500"
+            "w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center transition-colors cursor-pointer",
+            liked ? "bg-red-500 text-white shadow-[0_0_8px_rgba(239,68,68,0.5)]" : "bg-black/50 text-white hover:bg-red-500"
           )}
         >
           <Heart size={14} fill={liked ? "currentColor" : "none"} />
