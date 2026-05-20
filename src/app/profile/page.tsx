@@ -282,17 +282,7 @@ function ProfileContent() {
                   </div>
                 </div>
 
-                <div className="glass border border-white/5 p-6 space-y-4">
-                  <h4 className="font-bebas tracking-wider text-white">VELOCITY ECOSYSTEM</h4>
-                  <p className="text-xs text-white/40 leading-relaxed font-inter">
-                    Connect smart biometrics or configure smart equipment profiles via the combat system.
-                  </p>
-                  <Link href="/fight">
-                    <VelocityButton variant="outline" size="sm" className="w-full text-xs cursor-pointer">
-                      Enter Fighting Arena
-                    </VelocityButton>
-                  </Link>
-                </div>
+
               </div>
             </motion.div>
           )}

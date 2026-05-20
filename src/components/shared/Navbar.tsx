@@ -31,7 +31,6 @@ const Navbar = () => {
     { name: "Performance", href: "/category/performance" },
     { name: "Equipment", href: "/category/equipment" },
     { name: "Evolution", href: "/innovation" },
-    { name: "Combat", href: "/fight" },
   ];
 
   return (
