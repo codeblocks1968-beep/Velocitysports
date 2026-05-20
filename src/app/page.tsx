@@ -1,13 +1,102 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { VelocityButton } from "@/components/ui/VelocityButton";
 import Navbar from "@/components/shared/Navbar";
 import RotatingEarth from "@/components/ui/RotatingEarth";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Activity, Sparkles, Copy, Check } from "lucide-react";
 
 export default function Home() {
+  // Bio-Age Discount Calibrator states
+  const [ageInput, setAgeInput] = useState("");
+  const [isCalibrating, setIsCalibrating] = useState(false);
+  const [calibStep, setCalibStep] = useState(0);
+  const [discountResult, setDiscountResult] = useState<{
+    code: string;
+    percentage: number;
+    title: string;
+    desc: string;
+  } | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const calibrationTexts = [
+    "ANALYZING BIOLOGICAL METRICS...",
+    "MAPPING DEMOGRAPHIC SPEED CURVE...",
+    "GENERATING PROPORTIONAL DISCOUNT INDEX...",
+  ];
+
+  const handleCalibrate = (e: React.FormEvent) => {
+    e.preventDefault();
+    const age = parseInt(ageInput);
+
+    if (isNaN(age) || age <= 0 || age > 120) {
+      setErrorMsg("Please enter a valid biological age (1-120).");
+      return;
+    }
+
+    setErrorMsg("");
+    setIsCalibrating(true);
+    setCalibStep(0);
+    setDiscountResult(null);
+
+    // Multi-stage loading animation
+    const interval = setInterval(() => {
+      setCalibStep((prev) => {
+        if (prev >= calibrationTexts.length - 1) {
+          clearInterval(interval);
+          setTimeout(() => {
+            calculateDiscount(age);
+          }, 400);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 600);
+  };
+
+  const calculateDiscount = (age: number) => {
+    let code = "BIO-BASE-10";
+    let percentage = 10;
+    let title = "BASE BIOMETRIC LOG";
+    let desc = "Standard entry calibration discount for training start.";
+
+    if (age <= 18) {
+      code = "BIO-YOUTH-20";
+      percentage = 20;
+      title = "YOUTH VELOCITY AMPLIFIER";
+      desc = "Supporting high-growth biological potential. Energize your performance.";
+    } else if (age <= 35) {
+      code = "BIO-PEAK-15";
+      percentage = 15;
+      title = "PEAK PHYSIOLOGICAL BIOMASS";
+      desc = "Calibrated for prime athletic age. Maximizing absolute training velocity.";
+    } else if (age <= 55) {
+      code = "BIO-ENDURE-18";
+      percentage = 18;
+      title = "ENDURANCE METRIC CALIBRATION";
+      desc = "Paced for high-stamina training volumes. Honoring long-term physical dedication.";
+    } else {
+      code = "BIO-VET-25";
+      percentage = 25;
+      title = "VETERAN SPEED CONTROLLER";
+      desc = "Highest respect for lifelong athletes. Defying biological decay with premium gear.";
+    }
+
+    setDiscountResult({ code, percentage, title, desc });
+    setIsCalibrating(false);
+  };
+
+  const handleCopyCode = () => {
+    if (discountResult) {
+      navigator.clipboard.writeText(discountResult.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background selection:bg-velocity-blue selection:text-black">
       <Navbar />
@@ -159,6 +248,156 @@ export default function Home() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bio-Age Discount Calibrator Section */}
+      <section className="py-24 px-6 border-t border-white/5 bg-gradient-to-b from-transparent to-[#0a0a0a] relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-velocity-blue/5 rounded-full blur-[120px] pointer-events-none" />
+        </div>
+
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-12"
+          >
+            <span className="inline-block px-4 py-1 border border-velocity-blue/30 text-velocity-blue text-[10px] font-bebas tracking-[0.3em] uppercase mb-4 glass">
+              Interactive Calibration
+            </span>
+            <h2 className="text-4xl md:text-6xl font-bebas tracking-tighter">
+              BIO-AGE <span className="text-gradient">DISCOUNT MATRIX</span>
+            </h2>
+            <p className="text-white/45 max-w-xl mx-auto font-inter text-sm mt-3 leading-relaxed">
+              Scale your athletic edge proportional to your demographic profile. Enter your age to run the genetic calibration and reveal your tailored discount code.
+            </p>
+          </motion.div>
+
+          <div className="glass border border-white/10 p-8 md:p-12 max-w-2xl mx-auto relative">
+            {/* Top accent line */}
+            <div className="absolute top-0 left-0 w-8 h-[1px] bg-velocity-blue" />
+            <div className="absolute top-0 left-0 w-[1px] h-8 bg-velocity-blue" />
+            <div className="absolute bottom-0 right-0 w-8 h-[1px] bg-velocity-lime" />
+            <div className="absolute bottom-0 right-0 w-[1px] h-8 bg-velocity-lime" />
+
+            <AnimatePresence mode="wait">
+              {/* State 1: Calibrating (Loader) */}
+              {isCalibrating ? (
+                <motion.div
+                  key="loader"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="py-8 flex flex-col items-center justify-center text-center"
+                >
+                  <div className="relative w-16 h-16 mb-6">
+                    <div className="absolute inset-0 rounded-full border-2 border-white/5" />
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      className="absolute inset-0 rounded-full border-2 border-t-velocity-blue border-r-velocity-lime border-b-transparent border-l-transparent"
+                    />
+                    <div className="absolute inset-1.5 bg-background rounded-full flex items-center justify-center">
+                      <Activity size={18} className="text-velocity-blue animate-pulse" />
+                    </div>
+                  </div>
+                  <p className="font-mono text-xs text-velocity-blue uppercase tracking-widest">
+                    {calibrationTexts[calibStep]}
+                  </p>
+                </motion.div>
+              ) : discountResult ? (
+                /* State 2: Result */
+                <motion.div
+                  key="result"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="py-4 text-center space-y-6"
+                >
+                  <div className="inline-flex items-center gap-2 text-velocity-lime font-bebas text-xs tracking-widest border border-velocity-lime/30 bg-velocity-lime/10 px-3 py-1 rounded">
+                    <Sparkles size={12} /> BIOMETRIC CALIBRATION COMPLETE
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] font-mono text-white/30 tracking-widest uppercase">
+                      {discountResult.title}
+                    </p>
+                    <h3 className="text-5xl md:text-7xl font-bebas text-white tracking-tighter mt-1">
+                      {discountResult.percentage}% OFF
+                    </h3>
+                    <p className="text-xs text-white/50 font-inter max-w-sm mx-auto mt-2 leading-relaxed">
+                      {discountResult.desc}
+                    </p>
+                  </div>
+
+                  {/* Coupon card wrapper */}
+                  <div className="border border-white/10 bg-white/5 p-4 max-w-xs mx-auto flex items-center justify-between font-mono text-sm relative group">
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-4 bg-background rounded-r border-y border-r border-white/10" />
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-4 bg-background rounded-l border-y border-l border-white/10" />
+                    
+                    <span className="text-white/80 font-bold ml-2">{discountResult.code}</span>
+                    <button
+                      onClick={handleCopyCode}
+                      className="text-velocity-blue hover:text-white transition-colors cursor-pointer mr-2 p-1.5 hover:bg-white/5"
+                    >
+                      {copied ? <Check size={16} /> : <Copy size={16} />}
+                    </button>
+                  </div>
+
+                  <p className="text-[9px] text-white/30 font-inter">
+                    *Apply this code at checkout to reduce transaction totals.
+                  </p>
+
+                  <button
+                    onClick={() => setDiscountResult(null)}
+                    className="text-xs font-bebas tracking-widest text-white/40 hover:text-white transition-colors cursor-pointer pt-2"
+                  >
+                    CALIBRATE NEW METRIC
+                  </button>
+                </motion.div>
+              ) : (
+                /* State 3: Input Form */
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  onSubmit={handleCalibrate}
+                  className="space-y-6"
+                >
+                  <div className="max-w-xs mx-auto">
+                    <label className="block text-[10px] font-bebas tracking-wider text-white/40 mb-2 uppercase">
+                      Biological Age Reference
+                    </label>
+                    <input
+                      type="text"
+                      pattern="[0-9]*"
+                      inputMode="numeric"
+                      placeholder="e.g. 24"
+                      value={ageInput}
+                      onChange={(e) => setAgeInput(e.target.value.replace(/\D/g, ""))}
+                      className="w-full bg-white/5 border border-white/10 focus:border-velocity-blue/50 focus:outline-none px-4 py-3 text-center text-lg font-mono text-white transition-colors"
+                    />
+                    {errorMsg && (
+                      <p className="text-[10px] text-red-500 font-inter mt-1.5">{errorMsg}</p>
+                    )}
+                  </div>
+
+                  <div className="max-w-xs mx-auto">
+                    <VelocityButton
+                      type="submit"
+                      variant="primary"
+                      size="md"
+                      className="w-full cursor-pointer"
+                    >
+                      Calibrate Bio-Matrix
+                    </VelocityButton>
+                  </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </section>
